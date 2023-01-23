@@ -44,7 +44,11 @@ export default (state = initialState, action) => {
     case HIDE_FORM:
       return { ...state, formVisible: false };
     case FORM_RESET:
-      return Object.keys(obj).forEach((key) => (obj[key] = false));
+      return {
+        formVisible: false,
+        accountCreationSuccess: false,
+        accountDetailSuccess: false,
+      };
     default:
       return state;
   }

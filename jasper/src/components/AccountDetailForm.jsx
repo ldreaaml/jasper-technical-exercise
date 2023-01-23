@@ -1,12 +1,15 @@
-import React from "react";
 import { useState } from "react";
-import { containsEmptyString } from "../utils";
+import { validateInput } from "../utils";
 import { useDispatch } from "react-redux";
 import { accountDetailSuccess, hideForm } from "../redux/form";
+import Button from "./formComponents/Button";
+import ErrorText from "./formComponents/ErrorText";
+import InputField from "./formComponents/InputField";
+import InternationalPhoneList from "../data/phoneCountryCode.json";
 
 const AccountDetailForm = () => {
   const [isTermsAccepted, setIsTermsAccepted] = useState(true);
-  const [error, setError] = useState({ terms: false });
+  const [error, setError] = useState({ termsAgree: false });
   const [account, setAccount] = useState({
     address: "",
     phoneCode: "",
@@ -23,34 +26,26 @@ const AccountDetailForm = () => {
     if (validateInput(account)) {
       dispatch(accountDetailSuccess());
       dispatch(hideForm());
-    }
-    console.log({ ...account });
-  };
-
-  const validateInput = (obj) => {
-    if (containsEmptyString(obj)) {
-      const newObj = Object.entries(obj).reduce((acc, [key, value]) => {
+    } else {
+      const errorField = Object.entries(account).reduce((acc, [key, value]) => {
         acc[key] = value === "";
         return acc;
       }, {});
       setIsTermsAccepted(false);
-      setError({ ...newObj, terms: true });
-      console.log({ ...newObj, terms: true });
-      return false;
+      setError({ ...errorField, termsAgree: true });
     }
-    return true;
+    console.log({ ...account });
   };
 
   const handleTermsAccepted = (e) => {
     setIsTermsAccepted(!isTermsAccepted);
-    setError({ ...error, terms: false });
+    setError({ ...error, termsAgree: false });
   };
 
   const onChangeInput = (e) => {
     const { name, value } = e.target;
     setAccount({ ...account, [name]: value });
     setError({ ...error, [name]: false });
-    console.log({ ...account });
   };
 
   return (
@@ -67,14 +62,12 @@ const AccountDetailForm = () => {
         <form onSubmit={handleSubmit} className="space-y-1">
           <label className="block text-gray-700 font-medium">
             Current residential address
-            <input
-              className={`border p-2 w-full rounded font-normal focus:outline-blue ${
-                error.address ? "border-error bg-lightPink" : "border-gray-400"
-              }`}
+            <InputField
               name="address"
               value={address}
               type="text"
               onChange={onChangeInput}
+              isError={error.address}
             />
             <div className="flex text-sm font-medium justify-between">
               <span
@@ -96,7 +89,6 @@ const AccountDetailForm = () => {
               </div>
             </div>
           </label>
-          {/* phone */}
           <label className="block text-gray-700 font-medium ">
             Phone
             <div className="flex flex-row items-center justify-center space-x-4">
@@ -111,32 +103,24 @@ const AccountDetailForm = () => {
                 onChange={onChangeInput}
               >
                 <option value="DEFAULT" hidden></option>
-                {["+64", "+66", "+62"].map((val) => (
-                  <option value={val} key={val}>
-                    {val}
+                {InternationalPhoneList.map((val) => (
+                  <option value={val.code} key={val.id}>
+                    {`${val.country} (+${val.code})`}
                   </option>
                 ))}
               </select>
-              <input
-                className={`border p-2 w-full rounded font-normal focus:outline-blue ${
-                  error.phoneNumber
-                    ? "border-error bg-lightPink"
-                    : "border-gray-400"
-                }`}
+              <InputField
                 name="phoneNumber"
                 value={phoneNumber}
                 onChange={onChangeInput}
+                type="text"
+                isError={error.phoneNumber}
               />
             </div>
-            <span
-              className={`text-sm text-error w-full ${
-                error.phoneCode || error.phoneNumber
-                  ? "opacity-100"
-                  : "opacity-0"
-              }`}
-            >
-              Phone number is required
-            </span>
+            <ErrorText
+              text="Phone number is required"
+              isVisible={error.phoneCode || error.phoneNumber}
+            />
           </label>
 
           <label className="block text-gray-700 font-medium">
@@ -162,13 +146,10 @@ const AccountDetailForm = () => {
                 )
               )}
             </select>
-            <span
-              className={`text-sm font-medium text-error ${
-                error.citizenship ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              Primary citizenship is required
-            </span>
+            <ErrorText
+              text="Primary citizenship is required"
+              isVisible={error.citizenship}
+            />
           </label>
 
           <label className="block text-gray-700 font-medium">
@@ -194,13 +175,10 @@ const AccountDetailForm = () => {
                 )
               )}
             </select>
-            <span
-              className={`text-sm font-medium text-error ${
-                error.fundsAvailable ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              Funds available for investment is required
-            </span>
+            <ErrorText
+              text="Funds available for investment is required"
+              isVisible={error.fundsAvailable}
+            />
           </label>
 
           {/* checkbox */}
@@ -217,21 +195,11 @@ const AccountDetailForm = () => {
               of verifying my identity and address
             </label>
           </div>
-          <span
-            className={`text-sm font-medium text-error ${
-              error.terms ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            Accept these terms to continue
-          </span>
-
-          <button
-            className=" bg-blue font-medium text-white p-3 rounded w-full disabled:opacity-70 disabled:bg-slate-400"
-            type="submit"
-            disabled={!isTermsAccepted}
-          >
-            Complete now
-          </button>
+          <ErrorText
+            text="Accept these termsAgree to continue"
+            isVisible={error.termsAgree}
+          />
+          <Button text="Complete now" disabled={!isTermsAccepted} />
         </form>
       </div>
     </>

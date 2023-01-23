@@ -1,6 +1,6 @@
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { showForm } from "../redux/form";
+import { FaRegUserCircle } from "react-icons/fa";
 import PopUp from "./PopUp";
 
 const NavBar = () => {
@@ -17,14 +17,9 @@ const NavBar = () => {
     dispatch(showForm());
   };
 
-  useEffect(() => {
-    console.log("1:", accountDetailSuccess);
-    console.log("2:", accountDetailSuccess);
-  }, [accountCreationSuccess, accountDetailSuccess]);
-
   return (
     <>
-      <div className="flex justify-between items-center bg-blue p-3 px-12">
+      <div className="flex justify-between items-center bg-blue p-3 px-20">
         <p className="text-white text-4xl font-medium">Jasper</p>
         {accountCreationSuccess && accountDetailSuccess ? (
           <>
@@ -39,7 +34,7 @@ const NavBar = () => {
                 Notificatoins
               </a>
             </div>
-            <div>icon</div>
+            <FaRegUserCircle className="text-white text-3xl" />
           </>
         ) : (
           <>

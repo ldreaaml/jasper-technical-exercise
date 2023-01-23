@@ -1,7 +1,7 @@
 import AccountDetailForm from "./AccountDetailForm";
 import CreateAccountForm from "./AccountCreationForm";
 import { useDispatch, useSelector } from "react-redux";
-import { hideForm } from "../redux/form";
+import { formReset } from "../redux/form";
 
 const PopUp = () => {
   const visibility = useSelector((state) => state.form.formVisible);
@@ -9,7 +9,6 @@ const PopUp = () => {
   const dispatch = useDispatch();
 
   const closePopup = () => {
-    dispatch(hideForm());
     dispatch(formReset());
   };
 
