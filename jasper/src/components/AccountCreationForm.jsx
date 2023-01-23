@@ -8,7 +8,7 @@ import ErrorText from "./formComponents/ErrorText";
 import InputField from "./formComponents/InputField";
 
 const CreateAccountForm = () => {
-  const [isTermsAccepted, setIsTermsAccepted] = useState(true);
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [error, setError] = useState({ termsAgree: false });
   const [user, setUser] = useState({
     firstName: "",
@@ -114,6 +114,7 @@ const CreateAccountForm = () => {
           </label>
           <div className="flex flex-row space-x-2 items-start">
             <input
+              data-testid="termsAgreement"
               className="rounded mt-2"
               type="checkbox"
               checked={isTermsAccepted}
