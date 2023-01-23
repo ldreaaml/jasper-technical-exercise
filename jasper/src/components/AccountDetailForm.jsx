@@ -8,7 +8,7 @@ import InputField from "./formComponents/InputField";
 import InternationalPhoneList from "../data/phoneCountryCode.json";
 
 const AccountDetailForm = () => {
-  const [isTermsAccepted, setIsTermsAccepted] = useState(true);
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [error, setError] = useState({ termsAgree: false });
   const [account, setAccount] = useState({
     address: "",
