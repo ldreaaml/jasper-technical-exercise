@@ -43,7 +43,7 @@ const CreateAccountForm = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center space-y-3">
+      <div className="flex flex-col justify-center items-center space-y-3  p-3">
         <h1 className="text-darkBlue text-2xl font-medium">
           Create An Account
         </h1>
@@ -53,7 +53,7 @@ const CreateAccountForm = () => {
           you must have an account with Jasper.
         </span>
 
-        <form onSubmit={handleSubmit} className="space-y-1 p-3">
+        <form onSubmit={handleSubmit} className="space-y-1">
           <div className="flex flex-row items-center justify-center space-x-4">
             <label className="block text-gray-700 font-medium ">
               Legal First Name
