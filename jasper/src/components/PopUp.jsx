@@ -5,7 +5,9 @@ const PopUp = () => {
   return (
     <>
       <div className="bg-slate-300 p-3 flex justify-center">
-        <CreateAccountForm />
+        <div className="bg-white max-w-lg p-6 rounded-md">
+          <CreateAccountForm />
+        </div>
       </div>
     </>
   );

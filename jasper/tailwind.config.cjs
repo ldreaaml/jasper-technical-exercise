@@ -13,6 +13,7 @@ module.exports = {
         blue: "#0f46de",
         darkBlue: "#14246c",
         error: "#ff1344",
+        lightPink: "#fff7f5",
       },
     },
   },
