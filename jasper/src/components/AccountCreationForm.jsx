@@ -1,6 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import { containsEmptyString } from "../utils";
+import { useDispatch } from "react-redux";
+import { accountCreationSuccess } from "../redux/form";
 
 const CreateAccountForm = () => {
   const [isTermsAccepted, setIsTermsAccepted] = useState(true);
@@ -13,9 +15,13 @@ const CreateAccountForm = () => {
   });
   const { firstName, lastName, email, password } = user;
 
+  const dispatch = useDispatch();
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    validateInput(user);
+    if (validateInput(user)) {
+      dispatch(accountCreationSuccess());
+    }
   };
 
   const validateInput = (obj) => {
@@ -27,7 +33,9 @@ const CreateAccountForm = () => {
       setIsTermsAccepted(false);
       setError({ ...newObj, terms: true });
       console.log({ ...newObj, terms: true });
+      return false;
     }
+    return true;
   };
 
   const handleTermsAccepted = (e) => {

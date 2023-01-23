@@ -1,6 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import { containsEmptyString } from "../utils";
+import { useDispatch } from "react-redux";
+import { accountDetailSuccess, hideForm } from "../redux/form";
 
 const AccountDetailForm = () => {
   const [isTermsAccepted, setIsTermsAccepted] = useState(true);
@@ -12,12 +14,16 @@ const AccountDetailForm = () => {
     citizenship: "",
     fundsAvailable: "",
   });
-  const { address, phoneCode, phoneNumber, citizenship, fundsAvailable } =
-    account;
+  const { address, phoneNumber } = account;
+
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    validateInput(account);
+    if (validateInput(account)) {
+      dispatch(accountDetailSuccess());
+      dispatch(hideForm());
+    }
     console.log({ ...account });
   };
 
@@ -30,7 +36,9 @@ const AccountDetailForm = () => {
       setIsTermsAccepted(false);
       setError({ ...newObj, terms: true });
       console.log({ ...newObj, terms: true });
+      return false;
     }
+    return true;
   };
 
   const handleTermsAccepted = (e) => {
@@ -222,7 +230,7 @@ const AccountDetailForm = () => {
             type="submit"
             disabled={!isTermsAccepted}
           >
-            Create account
+            Complete now
           </button>
         </form>
       </div>

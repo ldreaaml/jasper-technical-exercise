@@ -1,17 +1,21 @@
-import { useState } from "react";
 import AccountDetailForm from "./AccountDetailForm";
-import CreateAccountForm from "./CreateAccountForm";
+import CreateAccountForm from "./AccountCreationForm";
+import { useDispatch, useSelector } from "react-redux";
+import { hideForm } from "../redux/form";
 
 const PopUp = () => {
-  const [isPopupVisible, setIsPopupVisible] = useState(true);
-  const [accountFormSuccess, setAccountFormSucess] = useState(false);
+  const visibility = useSelector((state) => state.form.formVisible);
+  const formSuccess = useSelector((state) => state.form.accountCreationSuccess);
+  const dispatch = useDispatch();
+
   const closePopup = () => {
-    setIsPopupVisible(false);
+    dispatch(hideForm());
+    dispatch(formReset());
   };
 
   return (
     <>
-      {isPopupVisible ? (
+      {visibility ? (
         <div
           className="relative z-10"
           aria-labelledby="modal-title"
@@ -30,11 +34,7 @@ const PopUp = () => {
                   x
                 </button>
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                  {accountFormSuccess ? (
-                    <CreateAccountForm />
-                  ) : (
-                    <AccountDetailForm />
-                  )}
+                  {!formSuccess ? <CreateAccountForm /> : <AccountDetailForm />}
                 </div>
               </div>
             </div>
