@@ -32,9 +32,9 @@ const AccountDetailForm = () => {
         return acc;
       }, {});
       setIsTermsAccepted(false);
-      setError({ ...errorField, termsAgree: false });
+      setError({ ...errorField, termsAgree: true });
     }
-    console.log({ ...account });
+    console.log("account details form", { ...account });
   };
 
   const handleTermsAccepted = (e) => {
@@ -196,7 +196,7 @@ const AccountDetailForm = () => {
             </label>
           </div>
           <ErrorText
-            text="Accept these termsAgree to continue"
+            text="Accept these terms to continue"
             isVisible={error.termsAgree}
           />
           <Button text="Complete now" disabled={!isTermsAccepted} />

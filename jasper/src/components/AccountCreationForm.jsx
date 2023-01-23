@@ -25,13 +25,14 @@ const CreateAccountForm = () => {
     if (validateInput(user)) {
       dispatch(accountCreationSuccess());
     } else {
-      const errorField = Object.entries(user).reduce((acc, [key, value]) => {
-        acc[key] = value === "";
-        return acc;
+      const errorField = Object.entries(user).reduce((user, [key, value]) => {
+        user[key] = value === "";
+        return user;
       }, {});
       setIsTermsAccepted(false);
       setError({ ...errorField, termsAgree: true });
     }
+    console.log("account creation form", { ...user });
   };
 
   const handleTermsAccepted = (e) => {
@@ -43,12 +44,11 @@ const CreateAccountForm = () => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
     setError({ ...error, [name]: false });
-    console.log({ ...user });
   };
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center space-y-4  p-3">
+      <div className="flex flex-col justify-center items-center space-y-4 p-3">
         <h1 className="text-darkBlue text-2xl font-medium">
           Create An Account
         </h1>
@@ -75,7 +75,7 @@ const CreateAccountForm = () => {
               />
             </label>
 
-            <label className="block text-gray-700 font-medium ">
+            <label className="block text-gray-700 font-medium">
               Legal Last Name
               <InputField
                 name="lastName"
@@ -122,17 +122,17 @@ const CreateAccountForm = () => {
             <label className="block text-gray-700">
               By continuing I certify that I am 18 years of age, and I gree to
               the
-              <a href="#" className="text-blue">
-                termsAgree & condition
+              <a href="#" className="text-blue px-1">
+                Terms & condition
               </a>
               and
-              <a href="#" className="text-blue">
+              <a href="#" className="text-blue px-1">
                 Privacy Policy.
               </a>
             </label>
           </div>
           <ErrorText
-            text="Accept these termsAgree to continue"
+            text="Accept these terms to continue"
             isVisible={error.termsAgree}
           />
           <Button text="Create Account" disabled={!isTermsAccepted} />
