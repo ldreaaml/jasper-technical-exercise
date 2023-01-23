@@ -23,7 +23,7 @@ const NavBar = () => {
         <p className="text-white text-4xl font-medium">Jasper</p>
         {accountCreationSuccess && accountDetailSuccess ? (
           <>
-            <div className="text-white space-x-12 ">
+            <div className="text-white space-x-12">
               <a href="#" className="opacity-80 hover:opacity-100">
                 Opportunities
               </a>

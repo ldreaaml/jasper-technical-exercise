@@ -32,7 +32,7 @@ const AccountDetailForm = () => {
         return acc;
       }, {});
       setIsTermsAccepted(false);
-      setError({ ...errorField, termsAgree: true });
+      setError({ ...errorField, termsAgree: false });
     }
     console.log({ ...account });
   };
