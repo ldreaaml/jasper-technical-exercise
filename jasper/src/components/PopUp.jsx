@@ -26,6 +26,7 @@ const PopUp = () => {
               <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <button
                   className="absolute right-2 top-0 p-3 font-medium text-xl text-gray-400"
+                  data-testid="close-button"
                   onClick={closePopup}
                 >
                   x

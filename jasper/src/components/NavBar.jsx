@@ -39,7 +39,7 @@ const NavBar = () => {
         ) : (
           <>
             <button
-              id="create-account"
+              data-testid="create-account-button"
               className="font-medium bg-transparent text-white border border-white py-2 px-4 rounded hover:bg-white hover:text-blue"
               onClick={showPopup}
             >
