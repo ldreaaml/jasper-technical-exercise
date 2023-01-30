@@ -1,50 +1,29 @@
 import React from "react";
-import { useState } from "react";
-import { validateInput } from "../utils";
 import { useDispatch } from "react-redux";
 import { accountCreationSuccess } from "../redux/form";
 import Button from "./formComponents/Button";
 import ErrorText from "./formComponents/ErrorText";
 import InputField from "./formComponents/InputField";
+import { userSchema } from "../validations/userValidation";
+import { useFormik } from "formik";
 
 const CreateAccountForm = () => {
-  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
-  const [error, setError] = useState({ termsAgree: false });
-  const [user, setUser] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-  });
-  const { firstName, lastName, email, password } = user;
-
   const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateInput(user)) {
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      termsAgreement: false,
+    },
+    validationSchema: userSchema,
+    onSubmit: (values) => {
+      console.log("user", values);
       dispatch(accountCreationSuccess());
-    } else {
-      const errorField = Object.entries(user).reduce((user, [key, value]) => {
-        user[key] = value === "";
-        return user;
-      }, {});
-      setIsTermsAccepted(false);
-      setError({ ...errorField, termsAgree: true });
-    }
-    console.log("account creation form", { ...user });
-  };
-
-  const handleTermsAccepted = (e) => {
-    setIsTermsAccepted(!isTermsAccepted);
-    setError({ ...error, termsAgree: false });
-  };
-
-  const onChangeInput = (e) => {
-    const { name, value } = e.target;
-    setUser({ ...user, [name]: value });
-    setError({ ...error, [name]: false });
-  };
+    },
+  });
 
   return (
     <>
@@ -58,67 +37,75 @@ const CreateAccountForm = () => {
           you must have an account with Jasper.
         </span>
 
-        <form onSubmit={handleSubmit} className="space-y-1 py-3">
+        <form onSubmit={formik.handleSubmit} className="space-y-6 py-3">
           <div className="flex flex-row items-center justify-center space-x-4">
-            <label className="block text-gray-700 font-medium ">
+            <label className="flex flex-col text-gray-700 font-medium max-w-[50%]">
               Legal First Name
               <InputField
                 name="firstName"
-                value={firstName}
                 type="text"
-                onChange={onChangeInput}
-                isError={error.firstName}
+                value={formik.values.firstName}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                isError={formik.touched.firstName && formik.errors.firstName}
               />
-              <ErrorText
-                text="First Name is required"
-                isVisible={error.firstName}
-              />
+              {formik.touched.firstName && formik.errors.firstName ? (
+                <ErrorText text={formik.errors.firstName} />
+              ) : null}
             </label>
 
-            <label className="block text-gray-700 font-medium">
+            <label className="flex flex-col text-gray-700 font-medium max-w-[50%]">
               Legal Last Name
               <InputField
                 name="lastName"
-                value={lastName}
+                value={formik.values.lastName}
                 type="text"
-                onChange={onChangeInput}
-                isError={error.lastName}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                isError={formik.touched.lastName && formik.errors.lastName}
               />
-              <ErrorText
-                text="Last Name is required"
-                isVisible={error.lastName}
-              />
+              {formik.touched.lastName && formik.errors.lastName ? (
+                <ErrorText text={formik.errors.lastName} />
+              ) : null}
             </label>
           </div>
-          <label className="block text-gray-700 font-medium">
+          <label className="flex flex-col text-gray-700 font-medium">
             Email
             <InputField
               name="email"
-              value={email}
               type="email"
-              onChange={onChangeInput}
-              isError={error.email}
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              isError={formik.touched.email && formik.errors.email}
             />
-            <ErrorText text="Email is required" isVisible={error.email} />
+            {formik.touched.email && formik.errors.email ? (
+              <ErrorText text={formik.errors.email} />
+            ) : null}
           </label>
-          <label className="block text-gray-700 font-medium">
+          <label className="flex flex-col text-gray-700 font-medium">
             Password
             <InputField
               name="password"
-              value={password}
               type="password"
-              onChange={onChangeInput}
-              isError={error.password}
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              isError={formik.touched.password && formik.errors.password}
             />
-            <ErrorText text="Password is required" isVisible={error.password} />
+            {formik.touched.password && formik.errors.password ? (
+              <ErrorText text={formik.errors.password} />
+            ) : null}
           </label>
-          <div className="flex flex-row space-x-2 items-start">
+          <div className="flex flex-row space-x-2 items-start pt-2">
             <input
               data-testid="termsAgreement"
+              name="termsAgreement"
               className="rounded mt-2"
               type="checkbox"
-              checked={isTermsAccepted}
-              onChange={handleTermsAccepted}
+              checked={formik.values.termsAgree}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             />
             <label className="block text-gray-700">
               By continuing I certify that I am 18 years of age, and I gree to
@@ -132,11 +119,14 @@ const CreateAccountForm = () => {
               </a>
             </label>
           </div>
-          <ErrorText
-            text="Accept these terms to continue"
-            isVisible={error.termsAgree}
+          {formik.touched.termsAgreement && formik.errors.termsAgreement ? (
+            <ErrorText text={formik.errors.termsAgreement} />
+          ) : null}
+
+          <Button
+            text="Create Account"
+            disabled={!formik.values.termsAgreement}
           />
-          <Button text="Create Account" disabled={!isTermsAccepted} />
         </form>
       </div>
     </>

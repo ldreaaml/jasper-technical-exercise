@@ -1,14 +1,8 @@
 import React from "react";
 
-const ErrorText = ({ text, isVisible }) => {
+const ErrorText = ({ text }) => {
   return (
-    <span
-      className={`text-sm font-medium w-full text-error ${
-        isVisible ? "opacity-100" : "opacity-0"
-      }`}
-    >
-      {text}
-    </span>
+    <span className={`h-0 text-sm font-medium w-full text-error`}>{text}</span>
   );
 };
 

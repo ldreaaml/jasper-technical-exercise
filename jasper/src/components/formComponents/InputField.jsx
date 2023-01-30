@@ -1,6 +1,6 @@
 import React from "react";
 
-const InputField = ({ name, value, onChange, type, isError }) => {
+const InputField = ({ name, value, onChange, onBlur, type, isError }) => {
   return (
     <input
       className={`border p-2 w-full rounded font-normal focus:outline-blue ${
@@ -11,6 +11,7 @@ const InputField = ({ name, value, onChange, type, isError }) => {
       value={value}
       type={type}
       onChange={onChange}
+      onBlur={onBlur}
     />
   );
 };
