@@ -1,11 +1,10 @@
-import React from "react";
 import { useDispatch } from "react-redux";
 import { accountCreationSuccess } from "../redux/form";
+import { userSchema } from "../validations/userValidation";
+import { useFormik } from "formik";
 import Button from "./formComponents/Button";
 import ErrorText from "./formComponents/ErrorText";
 import InputField from "./formComponents/InputField";
-import { userSchema } from "../validations/userValidation";
-import { useFormik } from "formik";
 
 const CreateAccountForm = () => {
   const dispatch = useDispatch();
@@ -97,31 +96,35 @@ const CreateAccountForm = () => {
               <ErrorText text={formik.errors.password} />
             ) : null}
           </label>
-          <div className="flex flex-row space-x-2 items-start pt-2">
-            <input
-              data-testid="termsAgreement"
-              name="termsAgreement"
-              className="rounded mt-2"
-              type="checkbox"
-              checked={formik.values.termsAgree}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            <label className="block text-gray-700">
-              By continuing I certify that I am 18 years of age, and I gree to
-              the
-              <a href="#" className="text-blue px-1">
-                Terms & condition
-              </a>
-              and
-              <a href="#" className="text-blue px-1">
-                Privacy Policy.
-              </a>
-            </label>
+          <div className="flex flex-col">
+            <div className="flex flex-row space-x-2 items-start pt-2">
+              <input
+                data-testid="termsAgreement"
+                name="termsAgreement"
+                className="rounded mt-2 bg-slate-400 p-2"
+                type="checkbox"
+                checked={formik.values.termsAgreement}
+                onChange={(e) => {
+                  formik.handleBlur(e);
+                  formik.handleChange(e);
+                }}
+              />
+              <label className="text-gray-700">
+                By continuing I certify that I am 18 years of age, and I gree to
+                the
+                <a href="#" className="text-blue px-1">
+                  Terms & condition
+                </a>
+                and
+                <a href="#" className="text-blue px-1">
+                  Privacy Policy.
+                </a>
+              </label>
+            </div>
+            {formik.touched.termsAgreement && formik.errors.termsAgreement ? (
+              <ErrorText text={formik.errors.termsAgreement} />
+            ) : null}
           </div>
-          {formik.touched.termsAgreement && formik.errors.termsAgreement ? (
-            <ErrorText text={formik.errors.termsAgreement} />
-          ) : null}
 
           <Button
             text="Create Account"
