@@ -1,52 +1,31 @@
-import { useState } from "react";
-import { validateInput } from "../utils";
 import { useDispatch } from "react-redux";
 import { accountDetailSuccess, hideForm } from "../redux/form";
+import { useFormik } from "formik";
+import { accountSchema } from "../validations/accountDetailValidation";
 import Button from "./formComponents/Button";
 import ErrorText from "./formComponents/ErrorText";
 import InputField from "./formComponents/InputField";
 import InternationalPhoneList from "../data/phoneCountryCode.json";
 
 const AccountDetailForm = () => {
-  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
-  const [error, setError] = useState({ termsAgree: false });
-  const [account, setAccount] = useState({
-    address: "",
-    phoneCode: "",
-    phoneNumber: "",
-    citizenship: "",
-    fundsAvailable: "",
-  });
-  const { address, phoneNumber } = account;
-
   const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateInput(account)) {
+  const formik = useFormik({
+    initialValues: {
+      address: "",
+      phoneCode: "",
+      phoneNumber: "",
+      citizenship: "",
+      fundsAvailable: "",
+      termsAgreement: false,
+    },
+    validationSchema: accountSchema,
+    onSubmit: (values) => {
+      console.log("accoutn", values);
       dispatch(accountDetailSuccess());
       dispatch(hideForm());
-    } else {
-      const errorField = Object.entries(account).reduce((acc, [key, value]) => {
-        acc[key] = value === "";
-        return acc;
-      }, {});
-      setIsTermsAccepted(false);
-      setError({ ...errorField, termsAgree: true });
-    }
-    console.log("account details form", { ...account });
-  };
-
-  const handleTermsAccepted = (e) => {
-    setIsTermsAccepted(!isTermsAccepted);
-    setError({ ...error, termsAgree: false });
-  };
-
-  const onChangeInput = (e) => {
-    const { name, value } = e.target;
-    setAccount({ ...account, [name]: value });
-    setError({ ...error, [name]: false });
-  };
+    },
+  });
 
   return (
     <>
@@ -59,48 +38,48 @@ const AccountDetailForm = () => {
           account. Complete the below to get access to the platform.
         </span>
 
-        <form onSubmit={handleSubmit} className="space-y-1">
+        <form onSubmit={formik.handleSubmit} className="space-y-7">
           <label className="block text-gray-700 font-medium">
             Current residential address
             <InputField
               name="address"
-              value={address}
               type="text"
-              onChange={onChangeInput}
-              isError={error.address}
+              value={formik.values.address}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              isError={formik.touched.address && formik.errors.address}
             />
+            {/* error  */}
             <div className="flex text-sm font-medium justify-between">
-              <span
-                className={` text-error w-full ${
-                  error.address ? "block" : "hidden"
-                }`}
-              >
-                A residential address is required
-              </span>
-              <div className="space-x-1 flex justify-end items-center w-full">
-                <span
-                  className={`font-normal text-xs ${
-                    error.address ? "hidden" : ""
-                  }`}
-                >
-                  Can't find your address?
+              {formik.touched.address && formik.errors.address ? (
+                <ErrorText text={formik.errors.address} />
+              ) : null}
+              <div className="space-x-1 flex justify-end items-end w-full bg-red-300">
+                {formik.touched.address && formik.errors.address ? null : (
+                  <span className="font-normal text-sm h-0 bg-slate-200">
+                    Can't find your address?
+                  </span>
+                )}
+                <span className="text-blue text-sm font-semibold h-0">
+                  Enter address manually
                 </span>
-                <span className="text-blue">Enter address manually</span>
               </div>
             </div>
           </label>
-          <label className="block text-gray-700 font-medium ">
+
+          <label className="flex flex-col text-gray-700 font-medium">
             Phone
             <div className="flex flex-row items-center justify-center space-x-4">
               <select
                 className={`border p-2 rounded font-normal focus:outline-blue ${
-                  error.phoneCode
+                  formik.touched.phoneCode && formik.errors.phoneCode
                     ? "border-error bg-lightPink"
                     : "border-gray-400"
                 }`}
                 name="phoneCode"
                 defaultValue={"DEFAULT"}
-                onChange={onChangeInput}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               >
                 <option value="DEFAULT" hidden></option>
                 {InternationalPhoneList.map((val) => (
@@ -111,29 +90,32 @@ const AccountDetailForm = () => {
               </select>
               <InputField
                 name="phoneNumber"
-                value={phoneNumber}
-                onChange={onChangeInput}
-                type="text"
-                isError={error.phoneNumber}
+                value={formik.values.phoneNumber}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                isError={
+                  formik.touched.phoneNumber && formik.errors.phoneNumber
+                }
               />
             </div>
-            <ErrorText
-              text="Phone number is required"
-              isVisible={error.phoneCode || error.phoneNumber}
-            />
+            {(formik.touched.phoneNumber && formik.errors.phoneNumber) ||
+            (formik.touched.phoneCode && formik.errors.phoneCode) ? (
+              <ErrorText text={formik.errors.phoneNumber} />
+            ) : null}
           </label>
 
-          <label className="block text-gray-700 font-medium">
+          <label className="flex flex-col text-gray-700 font-medium">
             Primary Citizenship
             <select
               className={`border font-normal text-gray-900 text-sm rounded block w-full p-2.5 ${
-                error.citizenship
+                formik.touched.citizenship && formik.errors.citizenship
                   ? "border-error bg-lightPink"
                   : "border-gray-400"
               }`}
               name="citizenship"
               defaultValue={"DEFAULT"}
-              onChange={onChangeInput}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             >
               <option value="DEFAULT" hidden>
                 Please select
@@ -146,23 +128,23 @@ const AccountDetailForm = () => {
                 )
               )}
             </select>
-            <ErrorText
-              text="Primary citizenship is required"
-              isVisible={error.citizenship}
-            />
+            {formik.touched.citizenship && formik.errors.citizenship ? (
+              <ErrorText text={formik.errors.citizenship} />
+            ) : null}
           </label>
 
           <label className="block text-gray-700 font-medium">
             Funds available for investment
             <select
               className={`border font-normal text-gray-900  text-sm rounded block w-full p-2.5 ${
-                error.fundsAvailable
+                formik.touched.fundsAvailable && formik.errors.fundsAvailable
                   ? "border-error bg-lightPink"
                   : "border-gray-400"
               }`}
               name="fundsAvailable"
               defaultValue={"DEFAULT"}
-              onChange={onChangeInput}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             >
               <option value="DEFAULT" hidden>
                 Please select
@@ -175,31 +157,36 @@ const AccountDetailForm = () => {
                 )
               )}
             </select>
-            <ErrorText
-              text="Funds available for investment is required"
-              isVisible={error.fundsAvailable}
-            />
+            {formik.touched.fundsAvailable && formik.errors.fundsAvailable ? (
+              <ErrorText text={formik.errors.fundsAvailable} />
+            ) : null}
           </label>
 
-          {/* checkbox */}
-          <div className="flex flex-row space-x-2 items-start">
-            <input
-              className="rounded mt-2 text-error"
-              type="checkbox"
-              checked={isTermsAccepted}
-              onChange={handleTermsAccepted}
-            />
-            <label className="block text-gray-700">
-              I consent to my information being passed to and checked with the
-              document issuer and any authorised third parties for the purpose
-              of verifying my identity and address
-            </label>
+          <div className="flex flex-col">
+            <div className="flex flex-row space-x-3 items-start">
+              <input
+                className="rounded mt-2"
+                data-testid="termsAgreement"
+                name="termsAgreement"
+                type="checkbox"
+                checked={formik.values.termsAgreement}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              <label className="flex flex-row text-gray-700">
+                I consent to my information being passed to and checked with the
+                document issuer and any authorised third parties for the purpose
+                of verifying my identity and address
+              </label>
+            </div>
+            {formik.touched.termsAgreement && formik.errors.termsAgreement ? (
+              <ErrorText text={formik.errors.termsAgreement} />
+            ) : null}
           </div>
-          <ErrorText
-            text="Accept these terms to continue"
-            isVisible={error.termsAgree}
+          <Button
+            text="Complete now"
+            disabled={!formik.values.termsAgreement}
           />
-          <Button text="Complete now" disabled={!isTermsAccepted} />
         </form>
       </div>
     </>
