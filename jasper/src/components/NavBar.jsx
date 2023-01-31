@@ -19,7 +19,7 @@ const NavBar = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center bg-blue p-3 px-20">
+      <nav className="flex justify-between items-center bg-blue p-3 px-20">
         <p className="text-white text-4xl font-medium">Jasper</p>
         {accountCreationSuccess && accountDetailSuccess ? (
           <>
@@ -47,7 +47,7 @@ const NavBar = () => {
             </button>
           </>
         )}
-      </div>
+      </nav>
       <PopUp />
     </>
   );

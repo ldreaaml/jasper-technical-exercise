@@ -21,7 +21,7 @@ const AccountDetailForm = () => {
     },
     validationSchema: accountSchema,
     onSubmit: (values) => {
-      console.log("accoutn", values);
+      console.log("account", values);
       dispatch(accountDetailSuccess());
       dispatch(hideForm());
     },

@@ -7,5 +7,3 @@ export const userSchema = yup.object({
   password: yup.string().required("Password is required"),
   termsAgreement: yup.bool().oneOf([true], "Accept these terms to continue"),
 });
-
-userSchema.cast();

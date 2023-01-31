@@ -1,4 +1,3 @@
-import React from "react";
 import App from "./App";
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { renderWithProviders } from "./test-utils";

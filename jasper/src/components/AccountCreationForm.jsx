@@ -37,8 +37,8 @@ const CreateAccountForm = () => {
         </span>
 
         <form onSubmit={formik.handleSubmit} className="space-y-6 py-3">
-          <div className="flex flex-row items-center justify-center space-x-4">
-            <label className="flex flex-col text-gray-700 font-medium max-w-[50%]">
+          <div className="flex flex-row justify-between space-x-4">
+            <label className="flex flex-col flex-1 text-gray-700 font-medium">
               Legal First Name
               <InputField
                 name="firstName"
@@ -53,7 +53,7 @@ const CreateAccountForm = () => {
               ) : null}
             </label>
 
-            <label className="flex flex-col text-gray-700 font-medium max-w-[50%]">
+            <label className="flex flex-col flex-1 text-gray-700 font-medium">
               Legal Last Name
               <InputField
                 name="lastName"
@@ -125,7 +125,6 @@ const CreateAccountForm = () => {
               <ErrorText text={formik.errors.termsAgreement} />
             ) : null}
           </div>
-
           <Button
             text="Create Account"
             disabled={!formik.values.termsAgreement}
