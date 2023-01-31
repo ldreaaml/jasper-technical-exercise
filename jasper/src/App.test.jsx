@@ -2,10 +2,13 @@ import App from "./App";
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { renderWithProviders } from "./test-utils";
 import { beforeEach } from "vitest";
+import { act } from "react-dom/test-utils";
 
 describe("Given user visit page", () => {
   beforeEach(() => {
-    renderWithProviders(<App />);
+    act(() => {
+      renderWithProviders(<App />);
+    });
   });
   it("should render a create account button", () => {
     expect(screen.getByText(/Create Account/i)).toBeInTheDocument();
@@ -41,25 +44,28 @@ describe("Given user visit page", () => {
       });
     });
     describe("When user agree to terms of service", () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         const checkBoxField = screen.getByTestId(/termsAgreement/i);
-        fireEvent.click(checkBoxField);
+        await act(async () => {
+          fireEvent.click(checkBoxField);
+        });
       });
-      it("should enabled submit button", () => {
+      it("should enabled submit button", async () => {
         const formSubmitButton = screen.getByTestId(/form-button/i);
         expect(formSubmitButton).toBeEnabled();
       });
       describe("When user fill some input fields and submit", () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           const firstNameField = screen.getByTestId(/firstName/i);
           const formSubmitButton = screen.getByTestId(/form-button/i);
-          fireEvent.input(firstNameField, {
-            target: {
-              value: "testFirstName",
-            },
+          await act(async () => {
+            fireEvent.input(firstNameField, {
+              target: {
+                value: "testFirstName",
+              },
+            });
+            fireEvent.click(formSubmitButton);
           });
-          expect(formSubmitButton).toBeEnabled();
-          fireEvent.click(formSubmitButton);
         });
         it("should output error message", () => {
           expect(
@@ -85,30 +91,32 @@ describe("Given user visit page", () => {
         });
       });
       describe("When user fill all input fields and submit", () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           const firstNameField = screen.getByTestId(/firstName/i);
           const lastNameField = screen.getByTestId(/lastName/i);
           const emailField = screen.getByTestId(/email/i);
           const passwordField = screen.getByTestId(/password/i);
-          fireEvent.input(firstNameField, {
-            target: {
-              value: "testFirstName",
-            },
-          });
-          fireEvent.input(lastNameField, {
-            target: {
-              value: "testLastName",
-            },
-          });
-          fireEvent.input(emailField, {
-            target: {
-              value: "testEmail@gmail.com",
-            },
-          });
-          fireEvent.input(passwordField, {
-            target: {
-              value: "testPassword",
-            },
+          await act(async () => {
+            fireEvent.input(firstNameField, {
+              target: {
+                value: "testFirstName",
+              },
+            });
+            fireEvent.input(lastNameField, {
+              target: {
+                value: "testLastName",
+              },
+            });
+            fireEvent.input(emailField, {
+              target: {
+                value: "testEmail@gmail.com",
+              },
+            });
+            fireEvent.input(passwordField, {
+              target: {
+                value: "testPassword",
+              },
+            });
           });
         });
         it("should contain correct value", () => {
